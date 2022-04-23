@@ -1,6 +1,8 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 #include <iostream>
+#include <string>
+#include <locale>
 
 class Interface {
 public:
@@ -22,6 +24,7 @@ public:
     // Interface functions
     void InterfaceControl();
     void printHelp();
+    std::string toLowerCase(std::string str);
 
 private:
     Interface();
