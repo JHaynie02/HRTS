@@ -13,21 +13,21 @@ public:
     // Class destructor
     ~Interface();
 
-    // To prevent cloning
+    // To prevent copying
     Interface(Interface const &) = delete;
     Interface(Interface &&) = delete;
 
-    // Non assignable
+    // To prevent moving
     void operator=(Interface const &) = delete;
     void operator=(Interface &&) = delete;
 
     // Interface functions
     void InterfaceControl();
-    void printHelp();
-    static std::string toLowerCase(std::string str);
+    void printHelp(); // Print out help to user
+    static std::string toLowerCase(std::string str); // takes string and turns into all lowercase
 
 private:
-    Interface();
+    Interface(); // singleton constructor must be declared private
 };
 
 #endif

@@ -7,6 +7,7 @@ Interface::~Interface() {}
 
 Interface& Interface::GetInstance()
 {
+    // creates static instance which is the same for the whole length of the program and return it
     static Interface instance;
     return instance;
 }
@@ -19,7 +20,8 @@ void Interface::InterfaceControl()
     while(true)
     {
         // std::cout << "\nWhat do you want to do?\n\tEnter: ";
-        std::cout << "\nEnter: ";
+        std::cout << "\n- Main Terminal";
+        std::cout << "\n\tEnter: ";
         std::string response;
         std::getline(std::cin, response);
         response = toLowerCase(response);
@@ -44,7 +46,7 @@ void Interface::InterfaceControl()
         }
         else
         {
-            std::cout << "\n- For help type 'help'";
+            std::cout << "What you entered was not recognised, for help type 'help'\n";
         }
     }
 }
@@ -60,9 +62,9 @@ void Interface::printHelp()
 std::string Interface::toLowerCase(std::string str)
 {
     std::locale loc;
-    for(std::string::size_type i = 0; i < str.length(); i++)
+    for(std::string::size_type i = 0; i < str.length(); i++) // for loop to go through string and make every character lower case
     {
-        str[i] = std::tolower(str[i],loc);
+        str[i] = std::tolower(str[i],loc); // if character is already lower case nothing changes
     }
     return str;
 }
