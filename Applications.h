@@ -1,17 +1,19 @@
 #ifndef APPLICATIONS_H
 #define APPLICATIONS_H
-#include <iostream>
 #include "AppState.h"
 
 class Applications {
 public:
+
+    // State design
     Applications();
-    // ~Applications();
-    void setState(appState* state);
+    void setState(AppState* state);
     void Handle();
 
-private: 
-    appState* state_;
-}
+    static void ApplicationInterface();
+
+private:
+    AppState* state_;
+};
 
 #endif

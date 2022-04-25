@@ -24,7 +24,7 @@ public:
     // Interface functions
     void InterfaceControl();
     void printHelp();
-    std::string toLowerCase(std::string str);
+    static std::string toLowerCase(std::string str);
 
 private:
     Interface();
