@@ -1,4 +1,5 @@
 #include "Interface.h"
+#include "Applications.h"
 
 Interface::Interface() {}
 
@@ -18,34 +19,39 @@ void Interface::InterfaceControl()
     while(true)
     {
         // std::cout << "\nWhat do you want to do?\n\tEnter: ";
-        std::cout << "Enter: ";
+        std::cout << "\nEnter: ";
         std::string response;
         std::getline(std::cin, response);
         response = toLowerCase(response);
         // std::cout << response << "\n";
-        if(response == "help")
+        if(response == "help" || response == "-h")
         {
             // std::cout << "Need to go to help function now\n";
             printHelp();
         }
-        else if(response == "applications")
+        else if(response == "applications" || response == "-a")
+        {
+            // Add functionality
+            Applications::ApplicationInterface();
+        }
+        else if(response == "employees" || response == "-e")
         {
             // Add functionality
         }
-        else if(response == "employees")
-        {
-            // Add functionality
-        }
-        else if(response == "exit")
+        else if(response == "exit" || response == "-q")
         {
             break;
+        }
+        else
+        {
+            std::cout << "\n- For help type 'help'";
         }
     }
 }
 
 void Interface::printHelp()
 {
-    std::cout << "\nThe Human Resource Tracking System can do many things.\n\n";
+    std::cout << "\nThe Human Resource Tracking System can do many things.\n";
     std::cout << "\t- To view and edit applications type 'applications'.\n";
     std::cout << "\t- To view and edit current employees and their information type 'employees'.\n";
     std::cout << "\t- To stop the program type 'exit'.\n";
