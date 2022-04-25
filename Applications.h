@@ -11,6 +11,8 @@ public:
     void Handle();
 
     static void ApplicationInterface();
+    static void ApplicationPrintHelp();
+    static void newApplication();
 
 private:
     AppState* state_;
