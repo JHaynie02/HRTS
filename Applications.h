@@ -13,8 +13,10 @@ public:
     static void ApplicationInterface();
     static void ApplicationPrintHelp();
     static void newApplication();
+    // void toJson();
 
 private:
+    // std::string
     AppState* state_;
 };
 
