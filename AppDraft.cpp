@@ -1,5 +1,5 @@
 #include "AppDraft.h"
-#include "AppFinished.h"
+#include "AppSubmitted.h"
 
 // AppDraft Constructor with initialization list setting context to context_
 AppDraft::AppDraft(Applications* context) : context_(context) {};
@@ -8,5 +8,5 @@ AppDraft::AppDraft(Applications* context) : context_(context) {};
 void AppDraft::Handle()
 {
     std::cout << "\nApplication now in draft mode\n";
-    context_->setState(new AppFinished(context_));
+    context_->setState(new AppSubmitted(context_));
 }
