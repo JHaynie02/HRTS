@@ -43,7 +43,15 @@ void Applications::ApplicationInterface()
         }
         else if(response == "new application" || response == "-na")
         {
-            newApplication();
+            Applications application;
+            jsonf jsonfileWrite;
+            application.Handle();
+            jsonfileWrite = application.newApplication();
+            if(jsonfileWrite != nullptr)
+            {
+                application.Handle();
+            }
+
         }
         else if(response == "unreviewed applications" || response == "-ua")
         {
@@ -71,84 +79,85 @@ void Applications::ApplicationPrintHelp()
     std::cout << "\t- To view information on reviewed applications type 'reviewed applications' or '-ra'\n";
 }
 
-void Applications::newApplication()
+jsonf Applications::newApplication()
 {
-    Applications application;
-    application.Handle();
+    // Applications application;
+    // application->Handle();
+    jsonf jsonfileWrite;
     while(true)
     {
         // creating a new application and setting the state to draft mode
         std::cout << "\n1) First and last name: ";
         std::string response;
         std::getline(std::cin, response);
-        // Store name into data structure
-        
+        jsonfileWrite["a) Name"] = response;
         std::cout << "\n2) Email Address: ";
         std::getline(std::cin, response);
-
-        std::cout << "\n3) Telephone Number: ";
+        jsonfileWrite["b) Email Address"] = response;
+        std::cout << "\n3) Phone Number: ";
         std::getline(std::cin, response);
-
-        std::cout << "\n4) Address: ";
+        jsonfileWrite["c) Phone Number"] = response;
+        std::cout << "\n4) Address, City, State, and Zip code: ";
         std::getline(std::cin, response);
-
-        std::cout << "\n5) City: ";
+        jsonfileWrite["d) Address"] = response;
+        std::cout << "\n5) Social Security Number: ";
         std::getline(std::cin, response);
-        
-        std::cout << "\n6) State: ";
+        jsonfileWrite["e) SSN"] = response;
+        std::cout << "\n6) Desired Salary: ";
         std::getline(std::cin, response);
-
-        std::cout << "\n7) Zip Code: ";
+        jsonfileWrite["f) Desired Salary"] = response;
+        std::cout << "\n7) Position Applied for: ";
         std::getline(std::cin, response);
-
-        std::cout << "\n8) Social Security Number: ";
+        jsonfileWrite["g) Position Applied for"] = response;
+        std::cout << "\n8) Are you a citizen of the United States? ";
         std::getline(std::cin, response);
-
-        std::cout << "\n9) Desired Salary: ";
-        std::getline(std::cin, response);
-
-        std::cout << "\n10) Position Applied for: ";
-        std::getline(std::cin, response);
-
-        std::cout << "\n11) Are you a citizen of the United States? ";
-        std::getline(std::cin, response);
-        if(response == "no")
+        jsonfileWrite["h) Citizen"] = response;
+        std::string responseCitizen;
+        responseCitizen = response;
+        if(responseCitizen == "no")
         {
-            std::cout << "\n11) a) Are you authorized to work in the U.S.? ";
-            std::getline(std::cin, response);
+            std::cout << "\n8) a) Are you authorized to work in the U.S.? ";
+            std::getline(std::cin, responseCitizen);
+            jsonfileWrite["h) i) Authorized to work in the U.S."] = responseCitizen;
         }
-
-        std::cout << "\n12) Have you ever been convicted of a felony? ";
+        std::cout << "\n9) Have you ever been convicted of a felony? ";
         std::getline(std::cin, response);
-
-        std::cout << "\n13) Did you graduate high school? ";
+        jsonfileWrite["i) Felon"] = response;
+        std::cout << "\n10) Did you graduate high school? ";
         std::getline(std::cin, response);
-        if(response == "yes" || response == "Yes")
+        jsonfileWrite["j) HS-Graduate"] = response;
+        std::string responseSchool;
+        responseSchool = response;
+        if(responseSchool == "yes" || responseSchool == "Yes")
         {
-            std::cout << "\n13) a) High School GPA: ";
-            std::getline(std::cin, response);
+            std::cout << "\n10) a) High School GPA: ";
+            std::getline(std::cin, responseSchool);
+            jsonfileWrite["j) i) HS-GPA"] = responseSchool;
         }
-
-        std::cout << "\n14) Did you graduate from college?  ";
+        std::cout << "\n11) Did you graduate from college?  ";
         std::getline(std::cin, response);
-        if(response == "yes" || response == "Yes")
+        responseSchool = response;
+        jsonfileWrite["k) College Graduate"] = response;
+        if(responseSchool == "yes" || responseSchool == "Yes")
         {
-            std::cout << "\n14) a) College GPA: ";
-            std::getline(std::cin, response);
+            std::cout << "\n11) a) College GPA: ";
+            std::getline(std::cin, responseSchool);
+            jsonfileWrite["k) i) College-GPA"] = responseSchool;
         }
-
-        std::cout << "\n15) Do you have prior working experience? ";
+        std::cout << "\n12) Do you have prior working experience? ";
         std::getline(std::cin, response);
+        jsonfileWrite["l) Prior working experience"] = response;
         if(response == "yes" || response == "no")
         {
-            std::cout << "\n15) a) Company Name: ";
+            std::cout << "\n12) a) Company Name: ";
             std::getline(std::cin, response);
-
-            std::cout << "\n15) b) Phone Number: ";
+            jsonfileWrite["l) i) Company Name"] = response;
+            std::cout << "\n12) b) Company Phone: ";
             std::getline(std::cin, response);
-
-            std::cout << "\n15) c) Position: ";
+            jsonfileWrite["l) ii) Company Phone"] = response;
+            std::cout << "\n12) c) Position Held: ";
             std::getline(std::cin, response);
+            jsonfileWrite["l) iii) Position Held"] = response;
         }
 
         std::cout << "\nType 'submit' to submit or 'restart' to restart";
@@ -162,9 +171,16 @@ void Applications::newApplication()
         }
         if(response == "submit")
         {
-            application.Handle();
-            break;
+            // application.Handle();
+            // std::cout << std::setw(3) << jsonfileWrite;
+            std::cout << jsonfileWrite.dump(4);
+            std::string filePath = "pretty.json";
+            std::ofstream file(filePath);
+            file << std::setw(3) << jsonfileWrite;
+            file << std::setw(3) << jsonfileWrite;
+            file.close();
+            return jsonfileWrite;
         }
     }
-    std::cout << "\nSuccessfully submitted\n";
+    // std::cout << "\nSuccessfully submitted\n";
 }

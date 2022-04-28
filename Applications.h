@@ -12,12 +12,16 @@ public:
 
     static void ApplicationInterface();
     static void ApplicationPrintHelp();
-    static void newApplication();
-    // void toJson();
+    jsonf newApplication();
+    // void toJsonHistory();
+    void toJsonSubmitted(jsonf jsonfile);
 
 private:
-    // std::string
     AppState* state_;
+    // std::string name_;
+    // std::string eAddress_;
+    // std::string phoneNumber_;
+    // std::string address_;
 };
 
 #endif
