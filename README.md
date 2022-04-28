@@ -1,4 +1,5 @@
 # HRTS
 A Human Resource Tracking System
 
-This program should offer a centralized location to access applications and review them manually or have the program filter out bad applications automatically.
+The Human Resource Tracking System can save your bussiness money by giving your human resource manager more efficient tools in hiring new employees, viewing and
+editing employees information. No longer will you need to store old applications and employee info on paper when this program does that for you.
