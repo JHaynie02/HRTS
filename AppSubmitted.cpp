@@ -5,6 +5,6 @@ AppSubmitted::AppSubmitted(Applications* context) : context_(context) {}
 
 void AppSubmitted::Handle()
 {
-    std::cout << "Application submitted\n";
+    std::cout << "\nApplication submitted\n";
     context_->setState(new AppReviewed(context_));
 }
