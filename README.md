@@ -8,13 +8,18 @@ of all things this program can do.
 ### Applications
 - Create and submit a new application for anyone wanting to fill out a job application.
 - Have the program automatically sift through bad applications so the manager does not have to.
-    What the program deems a bad application: (Anyone one of these listed below and the application is deemed no good)
+- What the program deems a bad application:    (Anyone one of these listed below and the application is deemed no good)
     1) A convicted felon
     2) Did not graduate highschool
     3) No prior work experience
-    4) Whether or not the current position being applied for has no openings
+    4) The current position being applied for has no openings
 - View an entire history of all applications ever submitted with times of when that application was submitted
 - View all current good applications and either hire that person or get rid of that application
+- Viewing good applications will always be sorted in the order the application was submitted
 - View good applications based off what position that person is applying for
 
 ### Employees
+- Manage all current employees by being able to see and edit employee info
+- Ability to fire an employee and remove their information from the database
+- View an entire history of every employee that has ever worked at this company
+- View a list of employees based off their job title.
