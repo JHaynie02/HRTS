@@ -12,8 +12,8 @@ public:
 
     static void ApplicationInterface();
     static void ApplicationPrintHelp();
-    jsonf newApplication();
-    // void toJsonHistory();
+    jsonf newApplication(Applications app);
+    void toJsonHistory(jsonf jsonApp);
     void toJsonSubmitted(jsonf jsonfile);
 
 private:
