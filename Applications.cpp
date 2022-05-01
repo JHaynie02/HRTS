@@ -183,7 +183,7 @@ jsonf Applications::newApplication(Applications app)
             // std::ofstream file(filePath);
             // file << std::setw(3) << jsonfileWrite;
             // file.close();
-            app.toJsonHistory(jsonfileWrite);
+            app.toJsonSubmitted(jsonfileWrite);
             return jsonfileWrite;
         }
     }
@@ -191,21 +191,81 @@ jsonf Applications::newApplication(Applications app)
 
 void Applications::toJsonHistory(jsonf jsonApp)
 {
-    // std::cout << jsonApp.dump(4);
+    // Gets amount of applications on file
+    std::ifstream fileCount("AppHistoryCount.txt");
+    fileCount >> AppHistCount_;
+    fileCount.close();
+
     std::string filePath = "ApplicationHistory.json";
     std::ifstream fileRead(filePath);
     jsonf jsonfileRead;
-    fileRead >> jsonfileRead;
 
-    std::cout << jsonfileRead.dump(4);
+    std::string filePathCopy = "ApplicationHistoryCopy.json";
+    std::ofstream fileWriteCopy(filePathCopy);
+
+    for(int i = 0; i < AppHistCount_; i++)
+    {
+        fileRead >> jsonfileRead;
+        fileWriteCopy << std::setw(3) << jsonfileRead;
+    }
     fileRead.close();
+    fileWriteCopy.close();
 
+    std::ifstream fileReadCopy(filePathCopy);
     std::ofstream fileWrite(filePath);
-//     if(fileWrite.eof())
-//     {
-//         std::cout << "\nEnd of file has been reached\n";
-//     }
-    fileWrite << std::setw(3) << jsonfileRead;
+    for(int i = 0; i < AppHistCount_; i++)
+    {
+            fileReadCopy >> jsonfileRead;
+            fileWrite << std::setw(3) << jsonfileRead;
+    }
     fileWrite << std::setw(3) << jsonApp;
-//     fileWrite.close();
+    AppHistCount_++;
+
+    std::ofstream fileCountChange("AppHistoryCount.txt");
+    fileCountChange << AppHistCount_;
+
+    remove("ApplicationHistoryCopy.json");
+    fileCountChange.close();
+    fileReadCopy.close();
+    fileWrite.close();
+}
+
+void Applications::toJsonSubmitted(jsonf jsonApp)
+{
+    std::ifstream fileCount("AppSubmittedCount.txt");
+    fileCount >> AppSubmittedCount_;
+    fileCount.close();
+
+    std::string filePath = "ApplicationSubmitted.json";
+    std::ifstream fileRead(filePath);
+    jsonf jsonfileRead;
+
+    std::string filePathCopy = "ApplicationSubmittedCopy.json";
+    std::ofstream fileWriteCopy(filePathCopy);
+
+    for(int i = 0; i < AppSubmittedCount_; i++)
+    {
+        fileRead >> jsonfileRead;
+        fileWriteCopy << std::setw(3) << jsonfileRead;
+    }
+    fileRead.close();
+    fileWriteCopy.close();
+
+    std::ifstream fileReadCopy(filePathCopy);
+    std::ofstream fileWrite(filePath);
+    for(int i = 0; i < AppSubmittedCount_; i++)
+    {
+            fileReadCopy >> jsonfileRead;
+            fileWrite << std::setw(3) << jsonfileRead;
+    }
+    fileWrite << std::setw(3) << jsonApp;
+    AppSubmittedCount_++;
+
+    std::ofstream fileCountChange("AppSubmittedCount.txt");
+    fileCountChange << AppSubmittedCount_;
+
+    remove("ApplicationSubmittedCopy.json");
+    fileCountChange.close();
+    fileReadCopy.close();
+    fileWrite.close();
 }
