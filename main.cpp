@@ -6,6 +6,8 @@ int main()
     Interface &user = Interface::GetInstance();
     user.InterfaceControl();
 
+    Applications::filterSubmissions();
+
     // Applications applications;
     // applications.Handle();
     // applications.Handle();

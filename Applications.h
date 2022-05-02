@@ -14,12 +14,14 @@ public:
     static void ApplicationPrintHelp();
     jsonf newApplication(Applications app);
     void toJsonHistory(jsonf jsonApp);
-    void toJsonSubmitted(jsonf jsonApp);
+    static void toJsonSubmitted(jsonf jsonApp);
+    void checkSubmitted();
+    static void filterSubmission();
 
 private:
     AppState* state_;
-    int AppHistCount_;
-    int AppSubmittedCount_;
+    static int AppHistCount_;
+    static int AppSubmittedCount_;
     // std::string name_;
     // std::string eAddress_;
     // std::string phoneNumber_;
