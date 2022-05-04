@@ -6,7 +6,7 @@
 class AppReviewed : public AppState {
 public:
     AppReviewed(Applications* context);
-    void Handle();
+    void HandleGood();
 
 private:
     Applications* context_;
