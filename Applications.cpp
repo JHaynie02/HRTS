@@ -15,10 +15,15 @@ void Applications::setState(AppState* state)
     state_ = state;
 }
 
-void Applications::Handle()
+void Applications::HandleGood()
 {
-    state_->Handle();
+    state_->HandleGood();
 }
+
+// void Applications::HandleBad()
+// {
+//     state_->HandleBad();
+// }
 
 void Applications::ApplicationInterface()
 {
@@ -41,14 +46,21 @@ void Applications::ApplicationInterface()
         else if(response == "new application" || response == "-na")
         {
             Applications application;
+            bool applicationState = true;
+            bool *applicationStatePtr;
+            applicationStatePtr = &applicationState;
             jsonf jsonfileWrite;
-            application.Handle();
-            jsonfileWrite = application.newApplication(application);
-            if(jsonfileWrite != nullptr)
+            application.HandleGood();
+            jsonfileWrite = application.newApplication(application, applicationStatePtr);
+            if(applicationState == true)
             {
-                application.Handle();
+                std::cout << "Application will not be put on file for further review\n";
             }
-            // application.checkSubmitted();
+            else
+            {
+                application.HandleGood();
+            }
+            application.checkSubmitted();
         }
         else if(response == "unreviewed applications" || response == "-ua")
         {
@@ -76,7 +88,7 @@ void Applications::ApplicationPrintHelp()
     std::cout << "\t- To view information on reviewed applications type 'reviewed applications' or '-ra'\n";
 }
 
-jsonf Applications::newApplication(Applications app)
+jsonf Applications::newApplication(Applications app, bool *applicationStatePtr)
 {
     jsonf jsonfileWrite;
     while(true)
@@ -173,20 +185,7 @@ jsonf Applications::newApplication(Applications app)
         }
         if(response == "submit")
         {
-            // application.Handle();
-            // std::cout << std::setw(3) << jsonfileWrite;
-            // std::cout << jsonfileWrite.dump(4) << "\n";
-            // std::string filePath = "ApplicationHistory.json";
-            // std::ofstream file(filePath);
-            // file << std::setw(3) << jsonfileWrite;
-            // file.close();
-
-
-            
-            // app.toJsonSubmitted(jsonfileWrite);
-            app.filterSubmission();
-            
-            
+            *applicationStatePtr = app.filterSubmission(jsonfileWrite);
             return jsonfileWrite;
         }
     }
@@ -278,24 +277,25 @@ void Applications::checkSubmitted()
     if(Applications::AppSubmittedCount_ != 0)
     {
         std::cout << "\nYou have unreviewed applications, would you like to review them?\n";
+        std::cout << "Type 'unreviewed applications' or '-ua' to review submitted applications\n";
     }
     else
     {
-        
+        std::cout << "No oustanding applications to be reviewed\n";
     }
 }
 
-void Applications::filterSubmission()
+bool Applications::filterSubmission(jsonf jsonfileRead)
 {
     bool application = false;
-    jsonf jsonFilter;
-    std::string filePath = "ApplicationSubmitted.json";
-    std::ifstream fileRead(filePath);
-    jsonf jsonfileRead;
+    // jsonf jsonFilter;
+    // std::string filePath = "ApplicationSubmitted.json";
+    // std::ifstream fileRead(filePath);
+    // jsonf jsonfileRead;
 
-    fileRead >> jsonfileRead;
+    // fileRead >> jsonfileRead;
 
-    std::cout << "Application Being Reviewed:\n" << jsonfileRead.dump(3) << "\n";
+    // std::cout << "Application Being Reviewed:\n" << jsonfileRead.dump(3) << "\n";
     
     for (const auto& item : jsonfileRead.items())
     {
@@ -313,7 +313,7 @@ void Applications::filterSubmission()
         {
             if(Interface::toLowerCase(item.value()) == "yes")
             {
-                std::cout << "Applicant is a felon\n";
+                // std::cout << "Applicant is a felon\n";
                 application = true;
             }
         }
@@ -321,7 +321,7 @@ void Applications::filterSubmission()
         {
             if(Interface::toLowerCase(item.value()) != "yes")
             {
-                std::cout << "Applicant is not a high school graduate\n";
+                // std::cout << "Applicant is not a high school graduate\n";
                 application = true;
             }
         }
@@ -329,7 +329,7 @@ void Applications::filterSubmission()
         {
             if(Interface::toLowerCase(item.value()) != "yes")
             {
-                std::cout << "Applicant has no prior working experince\n";
+                // std::cout << "Applicant has no prior working experince\n";
                 application = true;
             }
         }
@@ -337,9 +337,12 @@ void Applications::filterSubmission()
     if(application == true)
     {
         std::cout << "Application was not submitted for further review because basic standards for this job where not met.\n";
+        return application;
     }
     else if(application == false)
     {
         Applications::toJsonSubmitted(jsonfileRead);
+        return application;
     }
+    return true;
 }

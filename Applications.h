@@ -8,15 +8,16 @@ public:
     // State design
     Applications();
     void setState(AppState* state);
-    void Handle();
+    void HandleGood();
+    // void HandleBad();
 
     static void ApplicationInterface();
     static void ApplicationPrintHelp();
-    jsonf newApplication(Applications app);
+    jsonf newApplication(Applications app, bool *applicationStatePtr);
     void toJsonHistory(jsonf jsonApp);
     static void toJsonSubmitted(jsonf jsonApp);
     void checkSubmitted();
-    static void filterSubmission();
+    bool filterSubmission(jsonf jsonfileRead);
 
 private:
     AppState* state_;
