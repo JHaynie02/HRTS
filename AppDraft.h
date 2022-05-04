@@ -9,7 +9,7 @@ class AppDraft : public AppState {
 public:
     AppDraft(Applications* context);
     // ~AppDraft() {}
-    void Handle();
+    void HandleGood();
 
 private:
     Applications* context_;

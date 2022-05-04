@@ -5,8 +5,8 @@
 AppDraft::AppDraft(Applications* context) : context_(context) {};
 
 // Handle function to change application from draft to submitted
-void AppDraft::Handle()
+void AppDraft::HandleGood()
 {
-    std::cout << "\nApplication now in draft mode\n";
+    // std::cout << "\nApplication now in draft mode\n";
     context_->setState(new AppSubmitted(context_));
 }
