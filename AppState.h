@@ -12,7 +12,8 @@ using jsonf = nlohmann::json;
 class AppState {
 public:
     // virtual ~AppState(); 
-    virtual void Handle() = 0;
+    virtual void HandleGood() = 0;
+    // virtual void HandleBad() = 0;
 };
 
 #endif
