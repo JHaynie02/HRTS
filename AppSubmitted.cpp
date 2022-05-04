@@ -3,7 +3,7 @@
 
 AppSubmitted::AppSubmitted(Applications* context) : context_(context) {}
 
-void AppSubmitted::Handle()
+void AppSubmitted::HandleGood()
 {
     std::cout << "\nApplication submitted\n";
     context_->setState(new AppReviewed(context_));

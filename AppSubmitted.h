@@ -6,7 +6,7 @@
 class AppSubmitted : public AppState {
 public:
     AppSubmitted(Applications* context);
-    void Handle();
+    void HandleGood();
 
 private:
     Applications* context_;
