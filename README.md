@@ -12,7 +12,6 @@ of all things this program can do.
     1) A convicted felon
     2) Did not graduate highschool
     3) No prior work experience
-    4) The current position being applied for has no openings
 - View an entire history of all applications ever submitted with times of when that application was submitted
 - View all current good applications and either hire that person or get rid of that application
 - Viewing good applications will always be sorted in the order the application was submitted
