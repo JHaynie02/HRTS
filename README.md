@@ -17,9 +17,3 @@ of all things this program can do.
 - View all current good applications and either hire that person or get rid of that application
 - Viewing good applications will always be sorted in the order the application was submitted
 - View good applications based off what position that person is applying for
-
-### Employees
-- Manage all current employees by being able to see and edit employee info
-- Ability to fire an employee and remove their information from the database
-- View an entire history of every employee that has ever worked at this company
-- View a list of employees based off their job title.
