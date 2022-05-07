@@ -7,26 +7,27 @@ public:
 
     // State design
     Applications();
+    ~Applications() {}
     void setState(AppState* state);
     void HandleGood();
-    // void HandleBad();
 
     static void ApplicationInterface();
     static void ApplicationPrintHelp();
+    static void printSubmitted();
+    static void printReviewed();
+    static void findSubmitted(bool applicant, std::string nameToRemove);
+    static void removeSubmitted(bool applicant, int position);
     jsonf newApplication(Applications app, bool *applicationStatePtr);
-    void toJsonHistory(jsonf jsonApp);
+    static void toJsonHistory(jsonf jsonApp);
+    static void toJsonReviewed(jsonf jsonApp);
     static void toJsonSubmitted(jsonf jsonApp);
     void checkSubmitted();
     bool filterSubmission(jsonf jsonfileRead);
 
 private:
     AppState* state_;
-    static int AppHistCount_;
-    static int AppSubmittedCount_;
-    // std::string name_;
-    // std::string eAddress_;
-    // std::string phoneNumber_;
-    // std::string address_;
+    // static int AppHistCount_;
+    // static int AppSubmittedCount_;
 };
 
 #endif

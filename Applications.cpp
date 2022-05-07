@@ -2,8 +2,6 @@
 #include "AppDraft.h"
 #include "Interface.h"
 
-int Applications::AppHistCount_;
-int Applications::AppSubmittedCount_;
 
 Applications::Applications()
 {
@@ -19,11 +17,6 @@ void Applications::HandleGood()
 {
     state_->HandleGood();
 }
-
-// void Applications::HandleBad()
-// {
-//     state_->HandleBad();
-// }
 
 void Applications::ApplicationInterface()
 {
@@ -64,19 +57,34 @@ void Applications::ApplicationInterface()
         }
         else if(response == "unreviewed applications" || response == "-ua")
         {
-            
+            Applications::printSubmitted();
+            bool applicant;
+            std::cout << "\nTo hire or remove an applicant type their full name.";
+            std::cout << "\n\tEnter: ";
+            std::string response;
+            std::getline(std::cin, response);
+            std::cout << "\nTo hire this applicant type 'hire' or to remove the type 'remove'.";
+            std::cout << "\n\tEnter: ";
+            std::string responseBool;
+            std::getline(std::cin, responseBool);
+            if(responseBool == "remove")
+            {
+                applicant = false;
+            }
+            else if(responseBool == "hire")
+            {
+                applicant = true;
+            }
+            response = Interface::toLowerCase(response);
+            Applications::findSubmitted(applicant, response);
         }
         else if(response == "reviewed applications" || response == "-ra")
         {
-            
+            Applications::printReviewed();
         }
         else if(response == "back" || response  == "-b")
         {
             break;
-        }
-        else
-        {
-            
         }
     }
 }
@@ -194,8 +202,10 @@ jsonf Applications::newApplication(Applications app, bool *applicationStatePtr)
 void Applications::toJsonHistory(jsonf jsonApp)
 {
     // Gets amount of applications on file
+    int count = 0;
     std::ifstream fileCount("AppHistoryCount.txt");
-    fileCount >> Applications::AppHistCount_;
+    // fileCount >> Applications::AppHistCount_;
+    fileCount >> count;
     fileCount.close();
 
     std::string filePath = "ApplicationHistory.json";
@@ -205,7 +215,7 @@ void Applications::toJsonHistory(jsonf jsonApp)
     std::string filePathCopy = "ApplicationHistoryCopy.json";
     std::ofstream fileWriteCopy(filePathCopy);
 
-    for(int i = 0; i < Applications::AppHistCount_; i++)
+    for(int i = 0; i < count; i++)
     {
         fileRead >> jsonfileRead;
         fileWriteCopy << std::setw(3) << jsonfileRead;
@@ -215,16 +225,16 @@ void Applications::toJsonHistory(jsonf jsonApp)
 
     std::ifstream fileReadCopy(filePathCopy);
     std::ofstream fileWrite(filePath);
-    for(int i = 0; i < Applications::AppHistCount_; i++)
+    for(int i = 0; i < count; i++)
     {
             fileReadCopy >> jsonfileRead;
             fileWrite << std::setw(3) << jsonfileRead;
     }
     fileWrite << std::setw(3) << jsonApp;
-    Applications::AppHistCount_++;
+    count++;
 
     std::ofstream fileCountChange("AppHistoryCount.txt");
-    fileCountChange << Applications::AppHistCount_;
+    fileCountChange << count;
 
     remove("ApplicationHistoryCopy.json");
     fileCountChange.close();
@@ -234,8 +244,11 @@ void Applications::toJsonHistory(jsonf jsonApp)
 
 void Applications::toJsonSubmitted(jsonf jsonApp)
 {
+    int count = 0;
     std::ifstream fileCount("AppSubmittedCount.txt");
-    fileCount >> Applications::AppSubmittedCount_;
+    // fileCount >> Applications::AppHistCount_;
+    fileCount >> count;
+    // std::cout << "Count: " << count << "\n";
     fileCount.close();
 
     std::string filePath = "ApplicationSubmitted.json";
@@ -245,7 +258,7 @@ void Applications::toJsonSubmitted(jsonf jsonApp)
     std::string filePathCopy = "ApplicationSubmittedCopy.json";
     std::ofstream fileWriteCopy(filePathCopy);
 
-    for(int i = 0; i < Applications::AppSubmittedCount_; i++)
+    for(int i = 0; i < count; i++)
     {
         fileRead >> jsonfileRead;
         fileWriteCopy << std::setw(3) << jsonfileRead;
@@ -255,16 +268,16 @@ void Applications::toJsonSubmitted(jsonf jsonApp)
 
     std::ifstream fileReadCopy(filePathCopy);
     std::ofstream fileWrite(filePath);
-    for(int i = 0; i < Applications::AppSubmittedCount_; i++)
+    for(int i = 0; i < count; i++)
     {
             fileReadCopy >> jsonfileRead;
             fileWrite << std::setw(3) << jsonfileRead;
     }
     fileWrite << std::setw(3) << jsonApp;
-    Applications::AppSubmittedCount_++;
+    count++;
 
     std::ofstream fileCountChange("AppSubmittedCount.txt");
-    fileCountChange << Applications::AppSubmittedCount_;
+    fileCountChange << count;
 
     remove("ApplicationSubmittedCopy.json");
     fileCountChange.close();
@@ -274,7 +287,12 @@ void Applications::toJsonSubmitted(jsonf jsonApp)
 
 void Applications::checkSubmitted()
 {
-    if(Applications::AppSubmittedCount_ != 0)
+     int count = 0;
+    std::ifstream fileCount("AppHistoryCount.txt");
+    // fileCount >> Applications::AppHistCount_;
+    fileCount >> count;
+    fileCount.close();
+    if(count != 0)
     {
         std::cout << "\nYou have unreviewed applications, would you like to review them?\n";
         std::cout << "Type 'unreviewed applications' or '-ua' to review submitted applications\n";
@@ -288,19 +306,12 @@ void Applications::checkSubmitted()
 bool Applications::filterSubmission(jsonf jsonfileRead)
 {
     bool application = false;
-    // jsonf jsonFilter;
-    // std::string filePath = "ApplicationSubmitted.json";
-    // std::ifstream fileRead(filePath);
-    // jsonf jsonfileRead;
-
-    // fileRead >> jsonfileRead;
-
-    // std::cout << "Application Being Reviewed:\n" << jsonfileRead.dump(3) << "\n";
     
     for (const auto& item : jsonfileRead.items())
     {
         // std::cout << item.key();    
         // std::cout << " : " << item.value() << "\n";
+        
         if(item.key() == "I) Citizen")
         {
             if(Interface::toLowerCase(item.value()) != "yes")
@@ -336,13 +347,184 @@ bool Applications::filterSubmission(jsonf jsonfileRead)
     }
     if(application == true)
     {
-        std::cout << "Application was not submitted for further review because basic standards for this job where not met.\n";
+        std::cout << "Application was not submitted for further review because basic standards for this job were not met.\n";
         return application;
     }
     else if(application == false)
     {
+        std::cout << "Application being submitted\n";
         Applications::toJsonSubmitted(jsonfileRead);
         return application;
     }
     return true;
+}
+
+void Applications::printSubmitted()
+{
+    int count = 0;
+    std::ifstream readSubCount("AppSubmittedCount.txt");
+    readSubCount >> count;
+    readSubCount.close();
+    
+    std::ifstream readFile("ApplicationSubmitted.json");
+    jsonf jsonReadFile;
+    for(int i = 0; i < count; i++)
+    {
+        readFile >> jsonReadFile;
+        std::cout << jsonReadFile.dump(3) << "\n";
+    }
+    readFile.close();
+}
+
+void Applications::printReviewed()
+{
+    int count = 0;
+    std::ifstream readSubCount("AppReviewedCount.txt");
+    readSubCount >> count;
+    readSubCount.close();
+    
+    std::ifstream readFile("ApplicationReviewed.json");
+    jsonf jsonReadFile;
+    for(int i = 0; i < count; i++)
+    {
+        readFile >> jsonReadFile;
+        std::cout << jsonReadFile.dump(3) << "\n";
+    }
+    readFile.close();
+}
+
+void Applications::findSubmitted(bool applicant, std::string nameToRemove)
+{
+    int count = 0;
+    std::ifstream readSubCount("AppSubmittedCount.txt");
+    readSubCount >> count;
+    // std::cout << count << "\n";
+    readSubCount.close();
+    if(count > 0)
+    {
+        std::ifstream readFile("ApplicationSubmitted.json");
+        jsonf jsonfileRead;
+        for(int i = 0; i < count; i++)
+        {
+            readFile >> jsonfileRead;
+            for (const auto& item : jsonfileRead.items())
+            {
+                // std::cout << item.key();    
+                // std::cout << " : " << item.value() << "\n";
+                if(item.key() == "B) Name")
+                {
+                    if(Interface::toLowerCase(item.value()) == Interface::toLowerCase(nameToRemove))
+                    {
+                        // std::cout << "count: " << i << "\n";
+                        Applications::removeSubmitted(applicant, i);
+                    }
+                }
+            }
+        }
+        readFile.close();
+    }
+}
+
+void Applications::removeSubmitted(bool applicant, int position)
+{
+    int count = 0;
+    std::ifstream readSubCount("AppSubmittedCount.txt");
+    readSubCount >> count;
+    // std::cout << count << "\n";
+    readSubCount.close();
+    std::ifstream readFile("ApplicationSubmitted.json");
+    jsonf jsonfileRemove;
+    readFile >> jsonfileRemove;
+    for(int i = 0; i < position; i++)
+    {
+        readFile >> jsonfileRemove;
+    }
+    // std::cout << jsonfileRemove.dump(3) << "\n";
+    readFile.close();
+
+    std::string filePath = "ApplicationSubmitted.json";
+    std::ifstream fileRead(filePath);
+    jsonf jsonfileRead;
+
+    std::string filePathCopy = "ApplicationSubmittedCopy.json";
+    std::ofstream fileWriteCopy(filePathCopy);
+
+    for(int i = 0; i < count; i++)
+    {
+        fileRead >> jsonfileRead;
+        if(jsonfileRead == jsonfileRemove)
+        {
+            // std::cout << "Copy found\n";
+            if(applicant == true)
+            {
+                Applications::toJsonReviewed(jsonfileRead);
+            }
+        }
+        else
+        {
+            fileWriteCopy << std::setw(3) << jsonfileRead;
+        }
+    }
+    fileRead.close();
+    fileWriteCopy.close();
+
+    std::ifstream fileReadCopy(filePathCopy);
+    std::ofstream fileWrite(filePath);
+    for(int i = 0; i < count - 1; i++)
+    {
+            fileReadCopy >> jsonfileRead;
+            fileWrite << std::setw(3) << jsonfileRead;
+    }
+    count--;
+
+    std::ofstream fileCountChange("AppSubmittedCount.txt");
+    fileCountChange << count;
+
+    remove("ApplicationSubmittedCopy.json");
+    fileCountChange.close();
+    fileReadCopy.close();
+    fileWrite.close();
+
+}
+
+void Applications::toJsonReviewed(jsonf jsonApp)
+{
+    int count = 0;
+    std::ifstream fileCount("AppReviewedCount.txt");
+    // fileCount >> Applications::AppHistCount_;
+    fileCount >> count;
+    fileCount.close();
+
+    std::string filePath = "ApplicationReviewed.json";
+    std::ifstream fileRead(filePath);
+    jsonf jsonfileRead;
+
+    std::string filePathCopy = "ApplicationReviewedCopy.json";
+    std::ofstream fileWriteCopy(filePathCopy);
+
+    for(int i = 0; i < count; i++)
+    {
+        fileRead >> jsonfileRead;
+        fileWriteCopy << std::setw(3) << jsonfileRead;
+    }
+    fileRead.close();
+    fileWriteCopy.close();
+
+    std::ifstream fileReadCopy(filePathCopy);
+    std::ofstream fileWrite(filePath);
+    for(int i = 0; i < count; i++)
+    {
+            fileReadCopy >> jsonfileRead;
+            fileWrite << std::setw(3) << jsonfileRead;
+    }
+    fileWrite << std::setw(3) << jsonApp;
+    count++;
+
+    std::ofstream fileCountChange("AppReviewedCount.txt");
+    fileCountChange << count;
+
+    remove("ApplicationReviewedCopy.json");
+    fileCountChange.close();
+    fileReadCopy.close();
+    fileWrite.close();
 }
