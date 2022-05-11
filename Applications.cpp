@@ -47,7 +47,7 @@ void Applications::ApplicationInterface()
             jsonfileWrite = application.newApplication(application, applicationStatePtr);
             if(applicationState == true)
             {
-                std::cout << "Application will not be put on file for further review\n";
+                std::cout << "Application will not be put on file for further review.\n";
             }
             else
             {
@@ -58,29 +58,72 @@ void Applications::ApplicationInterface()
         else if(response == "unreviewed applications" || response == "-ua")
         {
             Applications::printSubmitted();
-            bool applicant;
-            std::cout << "\nTo hire or remove an applicant type their full name.";
-            std::cout << "\n\tEnter: ";
-            std::string response;
-            std::getline(std::cin, response);
-            std::cout << "\nTo hire this applicant type 'hire' or to remove the type 'remove'.";
-            std::cout << "\n\tEnter: ";
-            std::string responseBool;
-            std::getline(std::cin, responseBool);
-            if(responseBool == "remove")
+            int count = 0;
+            std::ifstream fileCount("AppSubmittedCount.txt");
+            // fileCount >> Applications::AppHistCount_;
+            fileCount >> count;
+            fileCount.close();
+            if(count > 0)
             {
-                applicant = false;
+                bool applicant;
+                bool nameFound = false;
+                std::string response;
+                std::string responseBool;
+                while(nameFound == false && (responseBool != "hire" || responseBool != "remove"))
+                {
+                    std::cout << "\nTo hire or remove an applicant type their full name.";
+                    std::cout << "\nTo stop reviewing applications type 'stop'";
+                    std::cout << "\n\tEnter: ";
+                    std::getline(std::cin, response);
+                    if(response == "stop")
+                    {
+                        break;
+                    }
+                    std::cout << "\nTo hire this applicant type 'hire' or to remove the type 'remove'.";
+                    std::cout << "\n\tEnter: ";
+                    std::getline(std::cin, responseBool);
+
+                    if(responseBool == "remove")
+                    {
+                        applicant = false;
+                    }
+                    else if(responseBool == "hire")
+                    {
+                        applicant = true;
+                    }
+                    response = Interface::toLowerCase(response);
+                    nameFound = Applications::findSubmitted(applicant, response);
+                }
+            //     remove = "";
+            //     while(response != "hire" || reponse != "remove")
+            //     {
+            //         std::cout << "\nTo hire this applicant type 'hire' or to remove the type 'remove'.";
+            //         std::cout << "\n\tEnter: ";
+            //         std::string responseBool;
+            //         std::getline(std::cin, responseBool);
+
+            //         if(responseBool == "remove")
+            //         {
+            //             applicant = false;
+            //         }
+            //         else if(responseBool == "hire")
+            //         {
+            //             applicant = true;
+            //         }
+            //     }
             }
-            else if(responseBool == "hire")
+            else
             {
-                applicant = true;
+                std::cout << "\nNo applications to review at this time.\n";
             }
-            response = Interface::toLowerCase(response);
-            Applications::findSubmitted(applicant, response);
         }
         else if(response == "reviewed applications" || response == "-ra")
         {
             Applications::printReviewed();
+        }
+        else if(response == "application history" || response == "-ah")
+        {
+            Applications::printHistory();
         }
         else if(response == "back" || response  == "-b")
         {
@@ -94,6 +137,7 @@ void Applications::ApplicationPrintHelp()
     std::cout << "\t- To fill out a new application type 'new application' or '-na'\n";
     std::cout << "\t- To view information about submitted but unreviewed applications type 'unreviewed applications' or '-ua'\n";
     std::cout << "\t- To view information on reviewed applications type 'reviewed applications' or '-ra'\n";
+    std::cout << "\t- To view all applications ever submitted type 'application history' or '-ah'\n";
 }
 
 jsonf Applications::newApplication(Applications app, bool *applicationStatePtr)
@@ -288,7 +332,7 @@ void Applications::toJsonSubmitted(jsonf jsonApp)
 void Applications::checkSubmitted()
 {
      int count = 0;
-    std::ifstream fileCount("AppHistoryCount.txt");
+    std::ifstream fileCount("AppSubmittedCount.txt");
     // fileCount >> Applications::AppHistCount_;
     fileCount >> count;
     fileCount.close();
@@ -299,7 +343,7 @@ void Applications::checkSubmitted()
     }
     else
     {
-        std::cout << "No oustanding applications to be reviewed\n";
+        std::cout << "\nNo oustanding applications to be reviewed\n";
     }
 }
 
@@ -347,12 +391,13 @@ bool Applications::filterSubmission(jsonf jsonfileRead)
     }
     if(application == true)
     {
-        std::cout << "Application was not submitted for further review because basic standards for this job were not met.\n";
+        std::cout << "\nApplication was not submitted for further review because basic standards for this job were not met.\n";
         return application;
     }
     else if(application == false)
     {
-        std::cout << "Application being submitted\n";
+        std::cout << "\nApplication being submitted\n";
+        Applications::toJsonHistory(jsonfileRead);
         Applications::toJsonSubmitted(jsonfileRead);
         return application;
     }
@@ -393,9 +438,27 @@ void Applications::printReviewed()
     readFile.close();
 }
 
-void Applications::findSubmitted(bool applicant, std::string nameToRemove)
+void Applications::printHistory()
 {
     int count = 0;
+    std::ifstream readSubCount("AppHistoryCount.txt");
+    readSubCount >> count;
+    readSubCount.close();
+    
+    std::ifstream readFile("ApplicationHistory.json");
+    jsonf jsonReadFile;
+    for(int i = 0; i < count; i++)
+    {
+        readFile >> jsonReadFile;
+        std::cout << jsonReadFile.dump(3) << "\n";
+    }
+    readFile.close();
+}
+
+bool Applications::findSubmitted(bool applicant, std::string nameToRemove)
+{
+    int count = 0;
+    bool nameFound = false;
     std::ifstream readSubCount("AppSubmittedCount.txt");
     readSubCount >> count;
     // std::cout << count << "\n";
@@ -416,6 +479,7 @@ void Applications::findSubmitted(bool applicant, std::string nameToRemove)
                     if(Interface::toLowerCase(item.value()) == Interface::toLowerCase(nameToRemove))
                     {
                         // std::cout << "count: " << i << "\n";
+                        nameFound = true;
                         Applications::removeSubmitted(applicant, i);
                     }
                 }
@@ -423,6 +487,11 @@ void Applications::findSubmitted(bool applicant, std::string nameToRemove)
         }
         readFile.close();
     }
+    if(nameFound == false)
+    {
+        std::cout << "\nApplication was not found please specify another name.\n";
+    }
+    return nameFound;
 }
 
 void Applications::removeSubmitted(bool applicant, int position)

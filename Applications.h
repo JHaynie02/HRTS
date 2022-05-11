@@ -15,7 +15,8 @@ public:
     static void ApplicationPrintHelp();
     static void printSubmitted();
     static void printReviewed();
-    static void findSubmitted(bool applicant, std::string nameToRemove);
+    static void printHistory();
+    static bool findSubmitted(bool applicant, std::string nameToRemove);
     static void removeSubmitted(bool applicant, int position);
     jsonf newApplication(Applications app, bool *applicationStatePtr);
     static void toJsonHistory(jsonf jsonApp);

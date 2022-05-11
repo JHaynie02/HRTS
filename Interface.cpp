@@ -55,7 +55,7 @@ void Interface::printHelp()
 {
     std::cout << "\nThe Human Resource Tracking System can do many things.\n";
     std::cout << "\t- To view and edit applications type 'applications'.\n";
-    std::cout << "\t- To view and edit current employees and their information type 'employees'.\n";
+    // std::cout << "\t- To view and edit current employees and their information type 'employees'.\n";
     std::cout << "\t- To stop the program type 'exit'.\n";
 }
 
