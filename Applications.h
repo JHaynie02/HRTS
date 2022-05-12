@@ -5,7 +5,7 @@
 class Applications {
 public:
 
-    // State design
+    // State design pattern
     Applications();
     ~Applications() {}
     void setState(AppState* state);
@@ -27,8 +27,6 @@ public:
 
 private:
     AppState* state_;
-    // static int AppHistCount_;
-    // static int AppSubmittedCount_;
 };
 
 #endif
