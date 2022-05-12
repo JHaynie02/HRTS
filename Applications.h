@@ -2,6 +2,8 @@
 #define APPLICATIONS_H
 #include "AppState.h"
 
+// https://github.com/JHaynie02/HRTS
+
 class Applications {
 public:
 
